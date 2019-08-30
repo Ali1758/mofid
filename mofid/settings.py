@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'celery',
+    'bootstrap4',
 
     'users',
 ]
