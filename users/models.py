@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     accessibility = models.BooleanField(default=False)
-    telegram_user = models.CharField(max_length=50, blank=True, null=True)
+    telegram_id = models.IntegerField(max_length=15)
 
     def __str__(self):
         return '{} - {}'.format(self.first_name, self.last_name)
