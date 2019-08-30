@@ -4,8 +4,8 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    fields = ('first_name', 'last_name', 'username', 'telegram_user', 'accessibility')
-    list_display = ('__str__', 'telegram_user', 'accessibility')
+    fields = ('first_name', 'last_name', 'username', 'telegram_id', 'accessibility')
+    list_display = ('__str__', 'telegram_id', 'accessibility')
     actions = ['access_accept']
 
     def access_accept(self, request, queryset):
