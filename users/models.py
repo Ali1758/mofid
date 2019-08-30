@@ -9,7 +9,10 @@ class UserManager(models.Manager):
 
 class User(AbstractUser):
     accessibility = models.BooleanField(default=False)
-    telegram_id = models.IntegerField(max_length=15)
+    telegram_id = models.IntegerField()
+
+    objects = models.Manager()
+    access = UserManager()
 
     def __str__(self):
         return '{} - {}'.format(self.first_name, self.last_name)
