@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mofid Crawler</title>
+    {% load static %}
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+
+    {#    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">#}
+
+</head>
+<body>
+
+{#Header#}
+<div>
+    {% include "Header.html" %}
+</div>
+
+<div class="container-fluid">
+    {% block content %}
+        {% if user.is_authenticated %}
+            <div class="col">
+
+            </div>
+            <div>
+
+            </div>
+        {% else %}
+            <div class="col-sm-12 col-md-8 offset-md-2"></div>
+            Please Log in or <a href="{% url "Login" %}">click here</a>
+        {% endif %}
+    {% endblock %}
+</div>
+
+
+
+
+
+{% bootstrap_jquery %}
+{% bootstrap_javascript %}
+
+</body>
+</html>
