@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 
 
-class UserManager(models.Manager):
+class UserAccessManager(models.Manager):
     def get_queryset(self):
-        return super(UserManager, self).get_queryset().filter(accessibility=True)
+        return super(UserAccessManager, self).get_queryset().filter(accessibility=True)
 
 
 class User(AbstractUser):
