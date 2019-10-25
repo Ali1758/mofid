@@ -1,9 +1,9 @@
 from django.shortcuts import render
 # from .task import generate_report
+# from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 from .telegram import send_message
-# from django.views.generic import TemplateView
-from crawler.models import Storage
+from django.views.generic import TemplateView
 
 
 def my_view(request):
@@ -13,7 +13,5 @@ def my_view(request):
 
 
 def index_view(requests):
-    last5output = Storage.objects.all()[:5]
-
-
+    # last5output =
     return render(requests, template_name='index.html', context=context)

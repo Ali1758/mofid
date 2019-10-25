@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'bootstrap4',
 
     'users',
-    'crawler',
 ]
 
 MIDDLEWARE = [
