@@ -8,7 +8,8 @@ from telegram.views import my_view, IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test/', view),
+    # path('test/', view),
+    path('', IndexView.as_view(), name='index'),
 ]
 
 # if settings.DEBUG:
