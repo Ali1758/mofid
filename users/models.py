@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 
 
 class UserManager(models.Manager):
@@ -11,9 +11,8 @@ class User(AbstractUser):
     accessibility = models.BooleanField(default=False)
     telegram_id = models.IntegerField()
 
-    objects = models.Manager()
-    access = UserManager()
+    objects = UserManager()
+    access = UserAccessManager()
 
     def __str__(self):
         return '{} - {}'.format(self.first_name, self.last_name)
-
