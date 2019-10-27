@@ -17,21 +17,49 @@
     {% include "Header.html" %}
 </div>
 
-<div class="container-fluid">
-    {% block content %}
+{% block content %}
+    <div class="container-fluid"
+         style="direction: rtl; text-align: center; font-family: B Mitra; font-size: 1.5em ; margin-top: 50px;">
         {% if user.is_authenticated %}
-            <div class="col">
+            <div class="row">
+                <span class="col-md-2"></span>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            شروع فرآیند جدید
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                {% bootstrap_form form %}
+                                <input type="submit" name="" value="ادامه">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            آخرین نتایج
+                        </div>
+                        <div class="card-body">
+                            {% for item in items %}
+                                <a href="{{ item.download_link }}"><h4>{{ item.name }}</h4></a>
+                                <hr>
+                            {% endfor %}
 
-            </div>
-            <div>
-
+                            <a href="{% url "index" %}" style="font-size: 0.8em; text-align: right;">جهت مشاهده نتایج
+                                بیشتر، کلیک نمایید</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         {% else %}
             <div class="col-sm-12 col-md-8 offset-md-2"></div>
             Please Log in or <a href="{% url "Login" %}">click here</a>
         {% endif %}
-    {% endblock %}
-</div>
+    </div>
+{% endblock %}
 
 
 
