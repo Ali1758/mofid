@@ -5,7 +5,8 @@ import requests
 def send_message(chat_id, text):
     TOKEN = '724028938:AAHybbVdMsuMglarLSHcPu6MOBHXnXcCdkY'
     payload = {'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML'}
-    requests.post("http://nameghi.ir/telegram/bot{token}/sendMessage".format(token=TOKEN), data=payload)
+    # requests.post("http://nameghi.ir/telegram/bot{token}/sendMessage".format(token=TOKEN), data=payload)
+    requests.post("https://api.telegram.org/bot{token}/sendMessage".format(token=TOKEN), data=payload)
 
 
 def send_file(chat_id, filename):
