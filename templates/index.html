@@ -22,6 +22,14 @@
          style="direction: rtl; text-align: center; font-family: B Mitra; font-size: 1.5em ; margin-top: 50px;">
         {% if user.is_authenticated %}
             <div class="row">
+                <div class="col-sm-12">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% bootstrap_messages message %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
                 <span class="col-md-2"></span>
                 <div class="col-sm-12 col-md-4">
                     <div class="card">
