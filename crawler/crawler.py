@@ -68,6 +68,10 @@ def crawler_engine(output_name):
         for site in [s for s in sites if s not in used_sites]:
             output.append([product_code, product_name, site, 'عدم تامین', 0])
 
+        percent = row_num / data.shape[0] * 100
+        obj.percentage = round(percent, 2)
+        obj.save()
+
     # save2file(output_name, data, output, summary)
     save2file(output_name, data, output)
 
