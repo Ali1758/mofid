@@ -9,7 +9,7 @@ class UserAccessManager(models.Manager):
 
 class User(AbstractUser):
     accessibility = models.BooleanField(default=False)
-    telegram_id = models.IntegerField()
+    telegram_id = models.IntegerField(default=False, unique=True)
 
     objects = UserManager()
     access = UserAccessManager()
