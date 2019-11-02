@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from telegram.views import index_view
+from mofid.views import index_view
 from crawler.views import download_view, full_crawling, custom_crawling
 # from django.conf import settings
 # from django.conf.urls.static import static
@@ -9,10 +9,12 @@ from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index_view, na1me='index'),
+    path('', index_view, name='index'),
     path('login', LoginView.as_view(), name='Login'),
     path('logout', LogoutView.as_view(), name='Logout'),
-    path('download/<slug:name>/', download_view, name='download')
+    path('download/<slug:name>/', download_view, name='download'),
+    path('defaultcrawling/', full_crawling, name='full_crawling'),
+    path('customcrawling/', custom_crawling, name='custom_crawling'),
 ]
 
 # if settings.DEBUG:
