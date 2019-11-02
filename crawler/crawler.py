@@ -8,6 +8,7 @@ import os
 from django.conf import settings
 from telegram.telegram import send_message, send_file
 from users.models import User
+from .models import Storage
 from .sites import Darukade, Digikala, Ezdaru, Mofidteb, Mosbatesabz, Shider
 
 
@@ -33,7 +34,8 @@ def crawler_engine(output_name):
     data = pd.read_csv(data_url)
     data = data[:][:2].dropna(axis='columns', how='all')
 
-    # sites = ["Mofidteb", "Darukade", "Mosbatesabz", "Digikala", "Ezdaru", "Shider"]
+    obj = Storage.objects.get(name=output_name)
+
     sites = ["mofidteb", "darukade", "mosbatesabz", "digikala", "ezdaru", "shider"]
 
     def urlcontent(address):
@@ -69,9 +71,11 @@ def crawler_engine(output_name):
     # save2file(output_name, data, output, summary)
     save2file(output_name, data, output)
 
-    user = User.access.all()
-    send_message(chat_id=user[0].telegram_id, text="Job Done")
-    send_file(chat_id=user[0].telegram_id, filename=output_name)
+    users = User.access.all()
+    for user in users:
+        send_message(chat_id=user.telegram_id,
+                     text='Job done\nYou can download it <a href="{}">from here</a>)'.format(obj.download_link()))
+        send_file(chat_id=user.telegram_id, filename=output_name)
 
     #     if row_num % 50 == 0:
     #         save2file('backup'+str(int(row_num/50)), data, out, rep)
