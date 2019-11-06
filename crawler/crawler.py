@@ -17,7 +17,7 @@ def save2file(name, data, output):
     output_cols = ['کد محصول', 'نام محصول', 'فروشنده', 'وضعیت موجودی', 'قیمت']
     summary_cols = ['کد محصول', 'نام محصول', 'قيمت مفيد', 'وضعيت مفيد', 'ارزانترين فروشگاه', 'قيمت', 'وضعیت', 'لینک']
 
-    out_path = settings.MEDIA_ROOT + os.sep + str(name)
+    out_path = settings.MEDIA_ROOT + os.sep + str(name) + ".xlsx"
     output_sheet = pd.DataFrame(np.array(output), columns=output_cols)
     # summary_sheet = pd.DataFrame(np.array(summary), columns=summary_cols)
     file = pd.ExcelWriter(out_path)
@@ -30,6 +30,10 @@ def save2file(name, data, output):
 
 @shared_task
 def crawler_engine(output_name):
+    users = User.access.all()
+    for user in users:
+        send_message(chat_id=user.telegram_id, text="Job Started")
+
     data_url = 'https://docs.google.com/spreadsheets/d/12EdKTrZ1pcJ6ce3GID6V-1W7MbafF8AnXBMSr_uoXRw/gviz/tq?tqx=out:csv'
     data = pd.read_csv(data_url)
     data = data[:][:2].dropna(axis='columns', how='all')
@@ -78,11 +82,9 @@ def crawler_engine(output_name):
     obj.complete = True
     obj.save()
 
-    users = User.access.all()
     for user in users:
         send_message(chat_id=user.telegram_id,
                      text='Job done\nYou can download it <a href="{}">from here</a>)'.format(obj.download_link()))
-        send_file(chat_id=user.telegram_id, filename=output_name)
 
     #     if row_num % 50 == 0:
     #         save2file('backup'+str(int(row_num/50)), data, out, rep)
