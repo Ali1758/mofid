@@ -10,10 +10,8 @@ from django.views.generic.list import ListView
 
 
 @login_required()
-class DownloadView(ListView):
-    template_name = "download.html"
-    model = Storage
-    context_object_name = "items"
+def download_view(request):
+    return render(request, "download.html", {"items": Storage.objects.all()})
 
 
 @login_required()
