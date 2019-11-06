@@ -6,11 +6,16 @@ from django.utils.text import slugify
 
 class Storage(models.Model):
     name = models.CharField(max_length=25)
+    slug = models.SlugField(max_length=25)
     complete = models.BooleanField(default=False)
     start = models.DateTimeField(auto_now_add=True)
     final = models.DateTimeField(auto_now=True)
     address = models.FilePathField(path=settings.MEDIA_ROOT)
     percentage = models.DecimalField(max_digits=5, decimal_places=0, default=0.00)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Storage, self).save()
 
     class Meta:
         ordering = ('-start',)
@@ -20,4 +25,4 @@ class Storage(models.Model):
         return "{}".format(self.name)
 
     def download_link(self):
-        return reverse("download", args=[slugify(self.name)])
+        return reverse("download_item", args=[self.slug])
