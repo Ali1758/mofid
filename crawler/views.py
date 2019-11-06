@@ -6,6 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .crawler import crawler_engine
 from jdatetime import datetime
+from django.views.generic.list import ListView
+
+
+@login_required()
+class DownloadView(ListView):
+    template_name = "download.html"
+    model = Storage
+    context_object_name = "items"
 
 
 @login_required()

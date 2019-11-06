@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from mofid.views import index_view
-from crawler.views import download_view, full_crawling, custom_crawling
+from crawler.views import DownloadView, download_items, full_crawling, custom_crawling
 # from django.conf import settings
 # from django.conf.urls.static import static
 from django.contrib.auth.views import LoginView, LogoutView
@@ -12,7 +12,8 @@ urlpatterns = [
     path('', index_view, name='index'),
     path('login', LoginView.as_view(), name='Login'),
     path('logout', LogoutView.as_view(), name='Logout'),
-    path('download/<slug:name>/', download_view, name='download'),
+    path('download/', DownloadView.as_view(), name='download'),
+    path('download/<slug:slug>/', download_items.as_view(), name='download_item'),
     path('defaultcrawling/', full_crawling, name='full_crawling'),
     path('customcrawling/', custom_crawling, name='custom_crawling'),
 ]
