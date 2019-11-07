@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block title %}Download{% endblock %}
+
+{% load bootstrap4 %}
+{% bootstrap_css %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% for item in items %}
+            {{ item.name }}
+            <br>
+        {% endfor %}
+
+    </div>
+{% endblock %}
