@@ -72,14 +72,15 @@ class Digikala:
 
     def price(self):
         try:
-            first = self.html.index('class="js-price-value"')
-            price = self.html[first + 24: first + self.html[first:].index('</span>')]
-            return re.sub(',', '', unidecode(price))
-        except:
+            first = self.html.index('<div class="c-product__seller-price-raw js-price-value"')
+            last = self.html.index('</div>', first)
+            price = re.findall('[0-9]+', unidecode(re.sub(',', '', self.html[first: last])))[-1]
+            return price
+        except ValueError:
             return 0
 
     def available(self):
-        if self.html.count('class="c-product__attributes js-product-attributes"'):
+        if self.price():
             return 'موجود'
         return 'ناموجود'
 
