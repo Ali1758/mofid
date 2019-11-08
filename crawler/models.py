@@ -2,14 +2,14 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
-from django.conf import settings
+from users.models import User
 
 
 class Storage(models.Model):
     name = models.CharField(max_length=25)
     slug = models.SlugField(max_length=25)
     complete = models.BooleanField(default=False)
-    starter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    starter = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=10, choices=(('All', 'All'), ('Custom', 'Custom')))
     start = models.DateTimeField(auto_now_add=True)
     final = models.DateTimeField(auto_now=True)
