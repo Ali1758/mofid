@@ -3,23 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Mofid Crawler</title>
-    {% load static %}
     {% load bootstrap4 %}
     {% bootstrap_css %}
 
-    {#    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">#}
+    <style>
+        .container {
+            font-family: B Mitra;
+            font-size: 1.5em;
+            margin-top: 50px;
+        }
+
+        .link, .link:hover {
+            color: black;
+            text-decoration: none;
+            text-align: right;
+        }
+
+        label {
+            font-size: .8em;
+        }
+
+        .form-group > label {
+            font-size: 1em;
+            text-align: right;
+        }
+
+        .card-header, .card-footer {
+            text-align: center;
+            direction: rtl;
+        }
+
+        .result {
+            text-align: center;
+            font-size: .9em;
+        }
+
+        .starter {
+            direction: rtl;
+            text-align: right
+        }
+
+    </style>
 
 </head>
-<body>
 
-{#Header#}
+<body>
 <div>
     {% include "Header.html" %}
 </div>
 
 {% block content %}
-    <div class="container-fluid"
-         style="direction: rtl; text-align: center; font-family: B Mitra; font-size: 1.5em ; margin-top: 50px;">
+    <div class="container">
         {% if user.is_authenticated %}
             <div class="row">
                 <div class="col-sm-12">
@@ -30,34 +64,40 @@
                     {% endif %}
                 </div>
 
-                <span class="col-md-2"></span>
-                <div class="col-sm-12 col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            شروع فرآیند جدید
-                        </div>
-                        <div class="card-body">
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                {% bootstrap_form form %}
-                                <input type="submit" name="" value="ادامه">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-md-5">
                     <div class="card">
                         <div class="card-header">
                             آخرین نتایج
                         </div>
-                        <div class="card-body">
+                        <div class="card-body result">
                             {% for item in items %}
-                                <a href="{{ item.download_link }}"><h4>{{ item.name }}</h4></a>
+                                <span>
+                                    <a href="{{ item.download_link }}">{{ item.name }}</a>
+                                </span>
                                 <hr>
                             {% endfor %}
-
-                            <a href="{% url "index" %}" style="font-size: 0.8em; text-align: right;">جهت مشاهده نتایج
-                                بیشتر، کلیک نمایید</a>
+                        </div>
+                        <div class="card-footer">
+                            <a class="link" href="{% url "download" %}">جهت مشاهده نتایج بیشتر، کلیک نمایید</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7">
+                    <div class="card">
+                        <div class="card-header">
+                            شروع فرآیند جدید
+                        </div>
+                        <div class="card-body starter">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                {% bootstrap_form form layout="horizontal" label_class="col-md-5" field_class="col-md-7" %}
+                                <div class="row">
+                                    <span class="col-sm-6"><input class="btn btn-block btn-primary" type="submit"
+                                                                  name="" value="ادامه"></span>
+                                    <span class="col-sm-6"><input class="btn btn-block btn-danger" type="reset" name=""
+                                                                  value="تنظیمات پیشفرض"></span>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
