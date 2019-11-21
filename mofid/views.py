@@ -18,7 +18,7 @@ def index_view(request):
             path = name + '.xlsx'
             s = Storage(name=name, complete=False, address=path, starter=request.user, type='All')
             s.save()
-            crawler_engine.delay(outputname=name, sites=data.sites, users=data["users"])
+            crawler_engine.delay(output_name=name, sites=data["sites"], users=data["users"])
             messages.success(request, "فرآیند آغاز شد")
             return redirect('index')
     else:

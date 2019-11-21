@@ -29,8 +29,8 @@ def save2file(name, data, output):
 
 
 @shared_task
-def crawler_engine(output_name):
-    users = User.access.all()
+def crawler_engine(output_name, sites, users):
+    users = User.access.filter(username__in=users)
     for user in users:
         send_message(chat_id=user.telegram_id, text="Job Started")
 
@@ -39,8 +39,6 @@ def crawler_engine(output_name):
     data = data[:][:2].dropna(axis='columns', how='all')
 
     obj = Storage.objects.get(name=output_name)
-
-    sites = ["mofidteb", "darukade", "mosbatesabz", "digikala", "ezdaru", "shider"]
 
     def urlcontent(address):
         page = requests.get(address)
