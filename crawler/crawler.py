@@ -33,7 +33,6 @@ def crawler_engine(output_name, sites, users):
     users = User.access.filter(username__in=users)
     for user in users:
         send_message(chat_id=user.telegram_id, text="Job Started")
-
     data_url = 'https://docs.google.com/spreadsheets/d/12EdKTrZ1pcJ6ce3GID6V-1W7MbafF8AnXBMSr_uoXRw/gviz/tq?tqx=out:csv'
     data = pd.read_csv(data_url)
     data = data[:][:2].dropna(axis='columns', how='all')
@@ -62,12 +61,13 @@ def crawler_engine(output_name, sites, users):
         for url in data.iloc[row_num][4:].values:
             if check('http', url):
                 site_name = str(url.split('/')[2].split('.')[-2])
-                product = eval('{}()'.format(site_name.capitalize()))
-                product.init(urlcontent(url))
-                price = product.price()
-                available = product.available()
-                output.append([product_code, product_name, site_name, available, price])
-                used_sites.append(site_name)
+                if site_name in sites:
+                    product = eval('{}()'.format(site_name.capitalize()))
+                    product.init(urlcontent(url))
+                    price = product.price()
+                    available = product.available()
+                    output.append([product_code, product_name, site_name, available, price])
+                    used_sites.append(site_name)
 
         for site in [s for s in sites if s not in used_sites]:
             output.append([product_code, product_name, site, 'عدم تامین', 0])
