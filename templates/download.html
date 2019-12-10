@@ -19,7 +19,6 @@
                 <th scope="col" style="vertical-align: middle;">ایجاد کننده</th>
                 <th scope="col" style="vertical-align: middle;">زمان ایجاد</th>
                 <th scope="col" style="vertical-align: middle;">زمان اتمام</th>
-                <th scope="col" style="vertical-align: middle;">نوع</th>
                 <th scope="col" style="vertical-align: middle;">درصد پیشرفت</th>
                 <th scope="col" style="vertical-align: middle;">دانلود خروجی</th>
 
@@ -33,7 +32,6 @@
                     <td style="vertical-align: middle;">{{ item.starter.username }}</td>
                     <td style="vertical-align: middle; direction: ltr">{{ item.start|jdate }}</td>
                     <td style="vertical-align: middle; direction: ltr">{{ item.final|jdate }}</td>
-                    <td style="vertical-align: middle;">{{ item.type|convert }}</td>
                     <td style="vertical-align: middle;">{{ item.percentage }}</td>
                     <td scope="col" style="vertical-align: middle;">
                         <a href="{{ item.download_link }}"

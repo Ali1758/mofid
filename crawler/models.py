@@ -10,7 +10,6 @@ class Storage(models.Model):
     slug = models.SlugField(max_length=25)
     complete = models.BooleanField(default=False)
     starter = models.ForeignKey(User, on_delete=models.CASCADE)
-    type = models.CharField(max_length=10, choices=(('All', 'All'), ('Custom', 'Custom')))
     start = models.DateTimeField(auto_now_add=True)
     final = models.DateTimeField(auto_now=True)
     address = models.FilePathField(path=settings.MEDIA_ROOT)
