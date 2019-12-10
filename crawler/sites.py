@@ -46,7 +46,7 @@ class Mosbatesabz:
         self.name = 'مثبت سبز'
 
     def init(self, html):
-        self.html = html
+        self.html = unidecode(html)
 
     def price(self):
         first = re.search('<p class="price"', self.html).span()[0]
