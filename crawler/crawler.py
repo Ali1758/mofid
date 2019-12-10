@@ -41,7 +41,9 @@ def crawler_engine(output_name, sites, users):
     obj = Storage.objects.get(name=output_name)
 
     def urlcontent(address):
-        page = requests.get(address)
+        page = requests.get(url=address,
+                            headers={
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'})
         html = page.text
         return str(html)
 
