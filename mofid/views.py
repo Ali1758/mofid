@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from crawler.models import Storage
 from crawler.forms import CustomForm
 from django.shortcuts import redirect
 from datetime import datetime
@@ -16,7 +15,7 @@ def index_view(request):
             data = form.cleaned_data
             name = "Output_{}".format(str(datetime.now()).split('.')[-2])
             path = name + '.xlsx'
-            s = Storage(name=name, complete=False, address=path, starter=request.user, type='All')
+            s = Storage(name=name, complete=False, address=path, starter=request.user)
             s.save()
             crawler_engine.delay(output_name=name, sites=data["sites"], users=data["users"])
             messages.success(request, "فرآیند آغاز شد")

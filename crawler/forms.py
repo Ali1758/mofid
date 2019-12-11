@@ -15,8 +15,7 @@ class CustomForm(forms.Form):
 
     users = forms.MultipleChoiceField(label="ارسال اعلانات برای افراد منتخب",
                                       required=True,
-                                      initial=["ali"],
-                                      choices=((user.username, user.get_full_name()) for user in User.access.all()),
+                                      choices=((user.username, user.get_full_name()) for user in User.objects.all()),
                                       error_messages={'required': 'حداقل یکی از کاربران باید انتخاب گردد'},
                                       widget=forms.CheckboxSelectMultiple)
 
