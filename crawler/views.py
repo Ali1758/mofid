@@ -5,12 +5,12 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 
-@login_required()
+@login_required(login_url="Login")
 def download_view(request):
     return render(request, "download.html", {"items": Storage.objects.all()})
 
 
-@login_required()
+@login_required(login_url="Login")
 def download_items(request, slug):
     output = get_object_or_404(Storage, slug__exact=slug)
     path = settings.MEDIA_ROOT + output.address
