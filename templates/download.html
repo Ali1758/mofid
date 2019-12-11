@@ -9,7 +9,7 @@
 {% load jdate %}
 
 {% block content %}
-    <div class="container" style="margin-top: 50px; font-family: 'Iranian Sans'">
+    <div class="container" style="margin-top: 50px; font-family: 'B Nazanin'">
         <table class="table table-responsive-md table-bordered table-striped table-hover"
                style="direction: rtl; text-align: center;">
             <thead class="thead-light">
@@ -29,7 +29,7 @@
                 <tr>
                     <td style="vertical-align: middle;">{{ item.pk }}</td>
                     <td style="vertical-align: middle;">{{ item.name }}</td>
-                    <td style="vertical-align: middle;">{{ item.starter.username }}</td>
+                    <td style="vertical-align: middle;">{{ item.starter.get_full_name }}</td>
                     <td style="vertical-align: middle; direction: ltr">{{ item.start|jdate }}</td>
                     <td style="vertical-align: middle; direction: ltr">{{ item.final|jdate }}</td>
                     <td style="vertical-align: middle;">{{ item.percentage }}</td>
