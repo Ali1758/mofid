@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from crawler.forms import CustomForm
 from django.shortcuts import redirect
-from datetime import datetime
+from jdatetime import datetime
 from crawler.models import Storage
 from crawler.crawler import crawler_engine
 from django.contrib import messages
@@ -9,6 +9,7 @@ from django.contrib import messages
 
 def index_view(request):
     last5output = Storage.objects.all().filter(complete=True)[:5]
+    progress = Storage.objects.all().filter(complete=False)[:5]
     if request.POST:
         form = CustomForm(request.POST)
         if form.is_valid():
@@ -22,4 +23,6 @@ def index_view(request):
             return redirect('index')
     else:
         form = CustomForm()
-    return render(request, template_name='index.html', context={'items': last5output, 'form': form})
+    return render(request=request,
+                  template_name='index.html',
+                  context={'items': last5output, 'progress': progress, 'form': form})
