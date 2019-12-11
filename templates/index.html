@@ -54,9 +54,22 @@
 
 {% block content %}
     <div class="container">
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user.has_access %}
+            <div class="col-md-12" style="margin-bottom: 50px;">
+                {% for item in progress %}
+                    <h5>{{ item.name }}</h5>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                             role="progressbar" aria-valuenow="{{ item.percentage }}" aria-valuemin="0"
+                             aria-valuemax="100"
+                             style="width: {{ item.percentage }}; font-size: 1.5em; color: greenyellow "> {{ item.percentage }}%
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-12 result">
                     {% if messages %}
                         {% for message in messages %}
                             {% bootstrap_messages message %}
@@ -70,12 +83,19 @@
                             آخرین نتایج
                         </div>
                         <div class="card-body result">
+                            <ul class="list-group list-group-flush">
                             {% for item in items %}
-                                <span>
+                                <li class="list-group-item">
                                     <a href="{{ item.download_link }}">{{ item.name }}</a>
-                                </span>
-                                <hr>
+                                </li>
                             {% endfor %}
+                            </ul>
+                            {#                            {% for item in items %}#}
+                            {#                                <span>#}
+                            {#                                    <a href="{{ item.download_link }}">{{ item.name }}</a>#}
+                            {#                                </span>#}
+                            {#                                <hr>#}
+                            {#                            {% endfor %}#}
                         </div>
                         <div class="card-footer">
                             <a class="link" href="{% url "download" %}">جهت مشاهده نتایج بیشتر، کلیک نمایید</a>
@@ -102,9 +122,13 @@
                     </div>
                 </div>
             </div>
+
+        {% elif user.is_authenticated and not user.has_access %}
+            <div style="text-align: center;">شما اجازه دسترسی به این قسمت را ندارید</div>
+
         {% else %}
             <div class="col-sm-12 col-md-8 offset-md-2"></div>
-            Please Log in or <a href="{% url "Login" %}">click here</a>
+            <div style="text-align: center;">Please Log in or <a href="{% url "Login" %}">click here</a></div>
         {% endif %}
     </div>
 {% endblock %}
