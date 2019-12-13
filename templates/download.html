@@ -9,7 +9,7 @@
 {% load jdate %}
 
 {% block content %}
-    <div class="container" style="margin-top: 50px; font-family: 'B Nazanin'">
+    <div class="container" style="font-size: .9em; font-family: 'B Nazanin'">
         <table class="table table-responsive-md table-bordered table-striped table-hover"
                style="direction: rtl; text-align: center;">
             <thead class="thead-light">
@@ -21,6 +21,7 @@
                 <th scope="col" style="vertical-align: middle;">زمان اتمام</th>
                 <th scope="col" style="vertical-align: middle;">درصد پیشرفت</th>
                 <th scope="col" style="vertical-align: middle;">دانلود خروجی</th>
+                <th scope="col" style="vertical-align: middle;">نسخه های پشتیبان</th>
 
             </tr>
             </thead>
@@ -35,7 +36,11 @@
                     <td style="vertical-align: middle;">{{ item.percentage }}</td>
                     <td scope="col" style="vertical-align: middle;">
                         <a href="{{ item.download_link }}"
-                           class="btn btn-info {% if not item.complete %}disabled{% endif %}">دانلود</a>
+                           class="btn btn-info {% if not item.complete %}disabled{% endif %}">Download</a>
+                    </td>
+                    <td scope="col" style="vertical-align: middle;">
+                        <a href="{{ item.backup_links }}"
+                           class="btn btn-warning {% if item.have_backup %}disabled{% endif %}">Backup</a>
                     </td>
                 </tr>
             {% endfor %}
