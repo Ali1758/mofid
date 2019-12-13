@@ -1,17 +1,17 @@
 {% url "index" as index_url %}
-{% url "new" as crawl_url %}
+{#{% url "new" as crawl_url %}#}
 {% url "download" as download_url %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{{ index_url }}">Mofid</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item {% if index_url == request.path %}active{% endif %}">
-                <a class="nav-link" href="{{ crawl_url }}"><span class="sr-only"></span>Crawling</a>
-            </li>
+            {#            <li class="nav-item {% if index_url == request.path %}active{% endif %}">#}
+            {#                <a class="nav-link" href="{{ crawl_url }}"><span class="sr-only"></span>Crawling</a>#}
+            {#            </li>#}
             <li class="nav-item {% if download_url == request.path %}active{% endif %}">
                 <a class="nav-link" href="{{ download_url }}">Results</a>
             </li>
