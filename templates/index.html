@@ -9,8 +9,8 @@
     <style>
         .container {
             font-family: B Mitra;
-            font-size: 1.5em;
-            margin-top: 50px;
+            font-size: 1.4em;
+            margin-top: 100px;
         }
 
         .link, .link:hover {
@@ -52,8 +52,8 @@
     {% include "Header.html" %}
 </div>
 
-{% block content %}
-    <div class="container">
+<div class="container">
+    {% block content %}
         {% if user.is_authenticated and user.has_access %}
             <div class="col-md-12" style="margin-bottom: 50px;">
                 {% for item in progress %}
@@ -62,7 +62,7 @@
                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
                              role="progressbar" aria-valuenow="{{ item.percentage }}" aria-valuemin="0"
                              aria-valuemax="100"
-                             style="width: {{ item.percentage }}; font-size: 1.5em; color: greenyellow "> {{ item.percentage }}%
+                             style="width: {{ item.percentage }}%; font-size: 1.5em; color: greenyellow "> {{ item.percentage }}%
                         </div>
                     </div>
                 {% endfor %}
@@ -90,12 +90,6 @@
                                 </li>
                             {% endfor %}
                             </ul>
-                            {#                            {% for item in items %}#}
-                            {#                                <span>#}
-                            {#                                    <a href="{{ item.download_link }}">{{ item.name }}</a>#}
-                            {#                                </span>#}
-                            {#                                <hr>#}
-                            {#                            {% endfor %}#}
                         </div>
                         <div class="card-footer">
                             <a class="link" href="{% url "download" %}">جهت مشاهده نتایج بیشتر، کلیک نمایید</a>
@@ -130,8 +124,8 @@
             <div class="col-sm-12 col-md-8 offset-md-2"></div>
             <div style="text-align: center;">Please Log in or <a href="{% url "Login" %}">click here</a></div>
         {% endif %}
-    </div>
-{% endblock %}
+    {% endblock %}
+</div>
 
 
 
