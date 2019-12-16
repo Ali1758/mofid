@@ -10,7 +10,7 @@ import random
 from django.conf import settings
 from telegram.telegram import send_message, send_file
 from users.models import User
-from .models import Storage
+from .models import Storage, Backup
 from .sites import Darukade, Digikala, Ezdaru, Mofidteb, Mosbatesabz, Shider
 
 user_agent_list = [
@@ -122,8 +122,10 @@ def crawler_engine(output_name, sites, users):
             output.append([product_code, product_name, site, 'عدم تامین', 0])
 
         if row_num % 50 == 0:
-            save2file('backup' + str(int(row_num / 50)), data, output, summary)
+            backup_name = output_name + 'backup' + str(int(row_num / 50))
+            save2file(backup_name, data, output, summary)
             time.sleep(300)
+            obj.backup_set.create(name=backup_name, address=backup_name + ".xlsx")
 
         percent = row_num + 1 / data.shape[0] * 100
         obj.percentage = round(percent, 2)
