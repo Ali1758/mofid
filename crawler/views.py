@@ -12,7 +12,8 @@ def download_view(request):
 
 @login_required(login_url="Login")
 def backups_view(request, slug):
-    return render(request, "download.html", {"backups": Backup.objects.filter(file__slug__exact=slug)})
+    return render(request, "backup.html", {"file": Storage.objects.get(slug__exact=slug),
+                                           "backups": Backup.objects.filter(file__slug__exact=slug)})
 
 
 @login_required(login_url="Login")
