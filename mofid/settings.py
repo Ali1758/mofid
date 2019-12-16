@@ -71,7 +71,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'mofid',
-        'USER': 'Mofid',
+        'USER': 'mofid',
         'PASSWORD': 'Negin123',
         'HOST': 'localhost',
         'PORT': '',
