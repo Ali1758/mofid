@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.http.response import HttpResponse
-from .models import Storage
+from .models import Storage, Backup
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
@@ -8,6 +8,11 @@ from django.contrib.auth.decorators import login_required
 @login_required(login_url="Login")
 def download_view(request):
     return render(request, "download.html", {"items": Storage.objects.all()})
+
+
+@login_required(login_url="Login")
+def backups_view(request, slug):
+    return render(request, "download.html", {"backups": Backup.objects.filter(file__slug__exact=slug)})
 
 
 @login_required(login_url="Login")
