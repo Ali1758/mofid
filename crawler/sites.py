@@ -11,9 +11,13 @@ class Mofidteb:
 
     def price(self):
         first = self.html.index('class="price"')
-        num = re.findall('[0-9]+,', self.html[first: self.html.index('تومان')])[-1]
-        price = self.html[self.html.index(num):].split()[0]
-        return re.sub('[a-zA-Z</>,]', '', unidecode(price))
+        last = self.html[first: self.html.index('تومان')]
+        try:
+            num = re.findall('[0-9]+,', self.html[first: last])[-1]
+            price = self.html[self.html.index(num):].split()[0]
+            return re.sub('[a-zA-Z</>,]', '', unidecode(price))
+        except:
+            return 0
 
     def available(self):
         blocks = [item.start() for item in re.finditer('class="block-box"', self.html)]
