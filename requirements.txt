@@ -8,12 +8,17 @@ chardet==3.0.4
 Django==2.2.4
 django-bootstrap4==0.0.8
 dnspython==1.16.0
+et-xmlfile==1.0.1
 greenlet==0.4.15
 idna==2.8
+jdatetime==3.6.2
+jdcal==1.4.1
 kombu==4.6.3
 monotonic==1.5
 numpy==1.17.0
+openpyxl==3.0.0
 pandas==0.25.0
+psycopg2==2.8.4
 python-dateutil==2.8.0
 pytz==2019.2
 redis==3.3.6
