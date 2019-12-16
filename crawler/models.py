@@ -6,8 +6,8 @@ from users.models import User
 
 
 class Storage(models.Model):
-    name = models.CharField(max_length=25)
-    slug = models.SlugField(max_length=25)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100)
     complete = models.BooleanField(default=False)
     starter = models.ForeignKey(User, on_delete=models.CASCADE)
     start = models.DateTimeField(auto_now_add=True)
@@ -28,3 +28,11 @@ class Storage(models.Model):
 
     def download_link(self):
         return reverse("download_item", args=[self.slug])
+
+    def have_backup(self):
+        if self.backup_set:
+            return True
+        return False
+
+    def backups_links(self):
+        return reverse("backups", args=[self.slug])
