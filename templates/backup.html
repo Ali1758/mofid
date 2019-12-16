@@ -1,0 +1,37 @@
+{% extends 'index.html' %}
+
+{% load bootstrap4 %}
+{% bootstrap_css %}
+
+{% load static %}
+
+
+{% load jdate %}
+
+{% block content %}
+    <div class="container" style="font-size: .9em; font-family: 'B Nazanin'">
+        <h3>نسخه های پشتیبان فایل {{ file.name }}</h3>
+        <table class="table table-responsive-md table-bordered table-striped table-hover"
+               style="direction: rtl; text-align: center;">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col" style="vertical-align: middle;">ردیف</th>
+                <th scope="col" style="vertical-align: middle;">نام</th>
+                <th scope="col" style="vertical-align: middle;">دانلود</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for backup in backups %}
+                <tr>
+                    <td style="vertical-align: middle;">{{ forloop.counter }}</td>
+                    <td style="vertical-align: middle;">{{ backup.name }}</td>
+                    <td scope="col" style="vertical-align: middle;">
+                        <a href="{{ backup.download_link }}"
+                           class="btn btn-info">Download</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
