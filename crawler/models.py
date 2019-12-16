@@ -3,6 +3,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
 from users.models import User
+import os
 
 
 class Storage(models.Model):
@@ -36,3 +37,20 @@ class Storage(models.Model):
 
     def backups_links(self):
         return reverse("backups", args=[self.slug])
+
+
+class Backup(models.Model):
+    name = models.CharField(max_length=40)
+    file = models.ForeignKey(Storage, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    address = models.FilePathField(path=settings.MEDIA_ROOT + os.sep + "backups")
+
+    class Meta:
+        ordering = ('-file', '-created')
+        db_table = 'backups'
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+    def download_link(self):
+        return reverse("download_link", args=[self.name])
