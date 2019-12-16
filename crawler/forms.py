@@ -16,6 +16,7 @@ class CustomForm(forms.Form):
     users = forms.MultipleChoiceField(label="ارسال اعلانات برای افراد منتخب",
                                       required=True,
                                       choices=((user.username, user.get_full_name()) for user in User.objects.all()),
+                                      # choices=((1, 1), (2, 2)),
                                       error_messages={'required': 'حداقل یکی از کاربران باید انتخاب گردد'},
                                       widget=forms.CheckboxSelectMultiple)
 
@@ -26,8 +27,3 @@ class CustomForm(forms.Form):
                                       error_messages={'required': 'حداقل یکی از سایت های موردنظر باید انتخاب گردد'},
                                       widget=forms.CheckboxSelectMultiple)
 
-    def clean_users(self):
-        users = self.cleaned_data['users']
-        if "ali" not in users:
-            raise forms.ValidationError("عدم انتخاب کاربر ادمین")
-        return users
