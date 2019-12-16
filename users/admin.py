@@ -16,7 +16,7 @@ class UserCreation(UserCreationForm):
     def save(self, *args, **kwargs):
         user = super(UserCreation, self).save(commit=False)
         user.telegram_id = self.cleaned_data["telegram_id"]
-        user.telegram_id = self.cleaned_data["accessibility"]
+        user.accessibility = self.cleaned_data["accessibility"]
         # if commit:
         user.save()
         return user
@@ -29,11 +29,10 @@ UserAdmin.add_form = UserCreation
 
 UserAdmin.fieldsets = (
     (None, {'fields': ('username', 'password')}),
-    (('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
-    (('Permissions'), {
+    ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
+    ('Permissions', {
         'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
     }),
-    (('Important dates'), {'fields': ('last_login', 'date_joined')}),
     (None, {"classes": ("wide",), "fields": ('accessibility', 'telegram_id')},),
 )
 
