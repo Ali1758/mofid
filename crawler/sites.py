@@ -10,9 +10,9 @@ class Mofidteb:
         self.html = html
 
     def price(self):
-        first = self.html.index('class="price"')
-        last = self.html[first: self.html.index('تومان')]
         try:
+            first = self.html.index('class="price"')
+            last = self.html[first: self.html.index('تومان')]
             num = re.findall('[0-9]+,', self.html[first: last])[-1]
             price = self.html[self.html.index(num):].split()[0]
             return re.sub('[a-zA-Z</>,]', '', unidecode(price))

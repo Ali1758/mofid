@@ -94,7 +94,10 @@ def crawler_engine(output_name, sites, users):
                     product = eval('{}()'.format(site_name.capitalize()))
                     product.init(urlcontent(url))
                     price = product.price()
-                    available = product.available()
+                    if price:
+                        available = product.available()
+                    else:
+                        available = "ناموجود"
                     output.append([product_code, product_name, site_name, available, price])
 
                 if site_name == 'mofidteb':
