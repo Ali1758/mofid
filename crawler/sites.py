@@ -16,7 +16,7 @@ class Mofidteb:
             num = re.findall('[0-9]+,', self.html[first: last])[-1]
             price = self.html[self.html.index(num):].split()[0]
             return re.sub('[a-zA-Z</>,]', '', unidecode(price))
-        except:
+        except ValueError:
             return 0
 
     def available(self):
@@ -34,10 +34,13 @@ class Darukade:
         self.html = html
 
     def price(self):
-        first = re.search('price-label">', self.html).span()[0]
-        last = self.html.index('</div>', first)
-        price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[0]
-        return price
+        try:
+            first = re.search('price-label">', self.html).span()[0]
+            last = self.html.index('</div>', first)
+            price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[0]
+            return price
+        except ValueError:
+            return 0
 
     def available(self):
         if '<div class="product-img unavailable-product">' in self.html:
@@ -53,10 +56,13 @@ class Mosbatesabz:
         self.html = unidecode(html)
 
     def price(self):
-        first = re.search('<p class="price"', self.html).span()[0]
-        last = self.html.index('</p>', first)
-        price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[-1]
-        return price
+        try:
+            first = re.search('<p class="price"', self.html).span()[0]
+            last = self.html.index('</p>', first)
+            price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[-1]
+            return price
+        except ValueError:
+            return 0
 
     def available(self):
         first = re.search('info_box', self.html).span()[0]
@@ -97,9 +103,12 @@ class Shider:
         self.html = html
 
     def price(self):
-        st = self.html.index('قیمت:')
-        sub = self.html[st: self.html.index('ریال', st)]
-        return int(int(re.sub('[a-zA-Z</>,:=" -]', '', unidecode(sub))) / 10)
+        try:
+            st = self.html.index('قیمت:')
+            sub = self.html[st: self.html.index('ریال', st)]
+            return int(int(re.sub('[a-zA-Z</>,:=" -]', '', unidecode(sub))) / 10)
+        except ValueError:
+            return 0
 
     def available(self):
         if self.html.count('ناموجود'):
@@ -115,9 +124,12 @@ class Ezdaru:
         self.html = html
 
     def price(self):
-        html = self.html
-        sub = html[html.index('class="price"'):html.index('class="product-buttons-wrap clearfix"')]
-        return min(re.findall('[0-9]+', re.sub('[,]', '', sub)))
+        try:
+            html = self.html
+            sub = html[html.index('class="price"'):html.index('class="product-buttons-wrap clearfix"')]
+            return min(re.findall('[0-9]+', re.sub('[,]', '', sub)))
+        except ValueError:
+            return 0
 
     def available(self):
         if self.html.count('ناموجود'):
