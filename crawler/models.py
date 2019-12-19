@@ -31,7 +31,7 @@ class Storage(models.Model):
         return reverse("download_item", args=[self.slug])
 
     def have_backup(self):
-        if self.backup_set:
+        if self.backups:
             return True
         return False
 
@@ -41,7 +41,7 @@ class Storage(models.Model):
 
 class Backup(models.Model):
     name = models.CharField(max_length=40)
-    file = models.ForeignKey(Storage, on_delete=models.CASCADE)
+    file = models.ForeignKey(Storage, on_delete=models.CASCADE, related_name="backups")
     created = models.DateTimeField(auto_now_add=True)
     address = models.FilePathField(path=settings.MEDIA_ROOT + os.sep + "backups")
 
@@ -54,3 +54,9 @@ class Backup(models.Model):
 
     def download_link(self):
         return reverse("download_link", args=[self.name])
+
+    @classmethod
+    def create(cls, name, parent, address):
+        b = cls(name=name, file=parent, address=address)
+        b.save()
+        return True
