@@ -127,7 +127,7 @@ def crawler_engine(output_name, sites, users):
         if row_num % 50 == 0:
             backup_name = output_name + 'backup' + str(int(row_num / 50))
             save2file(backup_name, data, output, summary)
-            time.sleep(300)
+            time.sleep(120)
             Backup.create(name=backup_name, parent=obj, address="backups/" + backup_name + ".xlsx")
             # obj.backups.create(name=backup_name, address=backup_name + ".xlsx")
 

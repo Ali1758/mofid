@@ -30,8 +30,8 @@ class Storage(models.Model):
     def download_link(self):
         return reverse("download_item", args=[self.slug])
 
-    def have_backup(self):
-        if self.backups:
+    def not_backup(self):
+        if not self.backups.count():
             return True
         return False
 
@@ -43,7 +43,11 @@ class Backup(models.Model):
     name = models.CharField(max_length=40)
     file = models.ForeignKey(Storage, on_delete=models.CASCADE, related_name="backups")
     created = models.DateTimeField(auto_now_add=True)
-    address = models.FilePathField(path=settings.MEDIA_ROOT + os.sep + "backups")
+    address = models.FilePathField(path=settings.MEDIA_ROOT + "backups")
+
+    def save(self, *args, **kwargs):
+        self.name = slugify(self.name)
+        super(Backup, self).save()
 
     class Meta:
         ordering = ('-file', '-created')
@@ -53,7 +57,7 @@ class Backup(models.Model):
         return "{}".format(self.name)
 
     def download_link(self):
-        return reverse("download_link", args=[self.name])
+        return reverse("download_item", args=[self.name])
 
     @classmethod
     def create(cls, name, parent, address):
