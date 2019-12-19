@@ -28,7 +28,7 @@
             <tbody>
             {% for item in items %}
                 <tr>
-                    <td style="vertical-align: middle;">{{ item.pk }}</td>
+                    <td style="vertical-align: middle;">{{ forloop.revcounter }}</td>
                     <td style="vertical-align: middle;">{{ item.name }}</td>
                     <td style="vertical-align: middle;">{{ item.starter.get_full_name }}</td>
                     <td style="vertical-align: middle; direction: ltr">{{ item.start|jdate }}</td>
