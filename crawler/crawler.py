@@ -8,7 +8,7 @@ import os
 import time
 import random
 from django.conf import settings
-from telegram.telegram import send_message, send_file
+from telegram.telegram import send_message
 from users.models import User
 from .models import Storage, Backup
 from .sites import Darukade, Digikala, Ezdaru, Mofidteb, Mosbatesabz, Shider
@@ -42,11 +42,14 @@ user_agent_list = [
 ]
 
 
-def save2file(name, data, output, summary):
+def save2file(name, data, output, summary, is_backup=False):
     output_cols = ['کد محصول', 'نام محصول', 'فروشنده', 'وضعیت موجودی', 'قیمت']
     summary_cols = ['کد محصول', 'نام محصول', 'قيمت مفيد', 'وضعيت مفيد', 'ارزانترين فروشگاه', 'قيمت', 'وضعیت', 'لینک']
 
-    out_path = settings.MEDIA_ROOT + os.sep + str(name) + ".xlsx"
+    if is_backup:
+        out_path = settings.MEDIA_ROOT + os.sep + "backups" + os.sep + str(name) + ".xlsx"
+    else:
+        out_path = settings.MEDIA_ROOT + os.sep + str(name) + ".xlsx"
     output_sheet = pd.DataFrame(np.array(output), columns=output_cols)
     summary_sheet = pd.DataFrame(np.array(summary), columns=summary_cols)
     file = pd.ExcelWriter(out_path)
@@ -125,10 +128,10 @@ def crawler_engine(output_name, sites, users):
             output.append([product_code, product_name, site, 'عدم تامین', 0])
 
         if row_num % 50 == 0:
-            backup_name = output_name + 'backup' + str(int(row_num / 50))
-            save2file(backup_name, data, output, summary)
+            backup_name = output_name + 'backup' + str(int(row_num / 50)) + ".xlsx"
+            save2file(backup_name, data, output, summary, is_backup=True)
+            Backup.create(name=backup_name, parent=obj, address=backup_name)
             time.sleep(120)
-            Backup.create(name=backup_name, parent=obj, address="backups/" + backup_name + ".xlsx")
             # obj.backups.create(name=backup_name, address=backup_name + ".xlsx")
 
         percent = row_num + 1 / data.shape[0] * 100
