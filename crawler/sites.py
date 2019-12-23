@@ -13,10 +13,9 @@ class Mofidteb:
         try:
             first = self.html.index('class="price"')
             last = self.html.index('تومان', first)
-            num = re.findall('[0-9]+,', self.html[first: last])[-1]
-            price = self.html[self.html.index(num):].split()[0]
-            return re.sub('[a-zA-Z</>,]', '', unidecode(price))
-        except ValueError:
+            price = re.findall('[0-9]+', re.sub(',', '', self.html[first: last]))[-1]
+            return price
+        except:
             return 0
 
     def available(self):
