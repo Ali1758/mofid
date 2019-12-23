@@ -24,3 +24,13 @@ def download_items(request, slug):
     response = HttpResponse(file, content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = "attachment; filename={}".format(output.name)
     return response
+
+
+@login_required(login_url="Login")
+def download_backup(request, slug):
+    output = get_object_or_404(Backup, name__exact=slug)
+    path = settings.MEDIA_ROOT + output.address
+    file = open(path, 'rb')
+    response = HttpResponse(file, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = "attachment; filename={}".format(output.name)
+    return response
