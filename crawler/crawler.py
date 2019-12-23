@@ -42,14 +42,11 @@ user_agent_list = [
 ]
 
 
-def save2file(name, data, output, summary, is_backup=False):
+def save2file(name, data, output, summary):
     output_cols = ['کد محصول', 'نام محصول', 'فروشنده', 'وضعیت موجودی', 'قیمت']
     summary_cols = ['کد محصول', 'نام محصول', 'قيمت مفيد', 'وضعيت مفيد', 'ارزانترين فروشگاه', 'قيمت', 'وضعیت', 'لینک']
 
-    if is_backup:
-        out_path = settings.MEDIA_ROOT + os.sep + "backups" + os.sep + str(name) + ".xlsx"
-    else:
-        out_path = settings.MEDIA_ROOT + os.sep + str(name) + ".xlsx"
+    out_path = settings.MEDIA_ROOT + os.sep + str(name) + ".xlsx"
     output_sheet = pd.DataFrame(np.array(output), columns=output_cols)
     summary_sheet = pd.DataFrame(np.array(summary), columns=summary_cols)
     file = pd.ExcelWriter(out_path)
@@ -129,7 +126,7 @@ def crawler_engine(output_name, sites, users):
 
         if row_num % 50 == 0:
             backup_name = output_name + 'backup' + str(int(row_num / 50)) + ".xlsx"
-            save2file(backup_name, data, output, summary, is_backup=True)
+            save2file(backup_name, data, output, summary)
             Backup.create(name=backup_name, parent=obj, address=backup_name)
             time.sleep(120)
             # obj.backups.create(name=backup_name, address=backup_name + ".xlsx")

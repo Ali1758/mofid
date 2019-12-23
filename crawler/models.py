@@ -42,7 +42,7 @@ class Backup(models.Model):
     name = models.CharField(max_length=40)
     file = models.ForeignKey(Storage, on_delete=models.CASCADE, related_name="backups")
     created = models.DateTimeField(auto_now_add=True)
-    address = models.FilePathField(path=settings.MEDIA_ROOT + "backups")
+    address = models.FilePathField(path=settings.MEDIA_ROOT)
 
     def save(self, *args, **kwargs):
         self.name = slugify(self.name)
