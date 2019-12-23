@@ -3,7 +3,6 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
 from users.models import User
-import os
 
 
 class Storage(models.Model):
@@ -57,7 +56,7 @@ class Backup(models.Model):
         return "{}".format(self.name)
 
     def download_link(self):
-        return reverse("download_item", args=[self.name])
+        return reverse("download_backup", args=[self.name])
 
     @classmethod
     def create(cls, name, parent, address):
