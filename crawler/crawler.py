@@ -116,7 +116,7 @@ def crawler_engine(output_name, sites, users):
                     other_url = url
 
                 used_sites.append(site_name)
-                time.sleep(60)
+                time.sleep(30)
 
         summary.append([product_code, product_name, mofid_price, mofid_avail,
                         other_store, other_price, other_avail, other_url])
@@ -124,16 +124,16 @@ def crawler_engine(output_name, sites, users):
         for site in [s for s in sites if s not in used_sites]:
             output.append([product_code, product_name, site, 'عدم تامین', 0])
 
-        if row_num % 50 == 0:
-            backup_name = output_name + 'backup' + str(int(row_num / 50)) + ".xlsx"
-            save2file(backup_name, data, output, summary)
-            Backup.create(name=backup_name, parent=obj, address=backup_name)
-            time.sleep(120)
-            # obj.backups.create(name=backup_name, address=backup_name + ".xlsx")
-
         percent = row_num + 1 / data.shape[0] * 100
         obj.percentage = round(percent, 2)
         obj.save()
+
+        if percent % 10 == 0 and percent != 0:
+            backup_name = output_name + 'backup' + str(int(row_num / 50))
+            save2file(backup_name, data, output, summary)
+            Backup.create(name=backup_name, parent=obj, address=backup_name + ".xlsx")
+
+        time.sleep(120)
 
     save2file(output_name, data, output, summary)
     obj.percentage = 100.00

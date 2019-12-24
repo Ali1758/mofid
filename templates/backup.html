@@ -23,7 +23,7 @@
             <tbody>
             {% for backup in backups %}
                 <tr>
-                    <td style="vertical-align: middle;">{{ forloop.counter }}</td>
+                    <td style="vertical-align: middle;">{{ forloop.revcounter }}</td>
                     <td style="vertical-align: middle;">{{ backup.name }}</td>
                     <td scope="col" style="vertical-align: middle;">
                         <a href="{{ backup.download_link }}"

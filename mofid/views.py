@@ -11,7 +11,6 @@ from django.contrib import messages
 def index_view(request):
     last5output = Storage.objects.all().filter(complete=True)[:5]
     progress = Storage.objects.all().filter(complete=False).filter(final__gt=date.today() - timedelta(days=2))[:5]
-    # progress = Storage.objects.all().filter(complete=False)[:5]
     if request.POST:
         form = CustomForm(request.POST)
         if form.is_valid():
