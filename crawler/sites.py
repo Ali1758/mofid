@@ -34,11 +34,12 @@ class Darukade:
 
     def price(self):
         try:
-            first = re.search('price-label">', self.html).span()[0]
+            # first = re.search('price-label">', self.html).span()[0]
+            first = self.html.index('price-label">')
             last = self.html.index('</div>', first)
             price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[0]
             return price
-        except ValueError:
+        except:
             return 0
 
     def available(self):
@@ -60,7 +61,7 @@ class Mosbatesabz:
             last = self.html.index('</p>', first)
             price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[-1]
             return price
-        except ValueError:
+        except:
             return 0
 
     def available(self):
@@ -85,7 +86,7 @@ class Digikala:
             last = self.html.index('</div>', first)
             price = re.findall('[0-9]+', unidecode(re.sub(',', '', self.html[first: last])))[-1]
             return price
-        except ValueError:
+        except:
             return 0
 
     def available(self):
@@ -106,7 +107,7 @@ class Shider:
             st = self.html.index('قیمت:')
             sub = self.html[st: self.html.index('ریال', st)]
             return int(int(re.sub('[a-zA-Z</>,:=" -]', '', unidecode(sub))) / 10)
-        except ValueError:
+        except:
             return 0
 
     def available(self):
@@ -127,7 +128,7 @@ class Ezdaru:
             html = self.html
             sub = html[html.index('class="price"'):html.index('class="product-buttons-wrap clearfix"')]
             return min(re.findall('[0-9]+', re.sub('[,]', '', sub)))
-        except ValueError:
+        except:
             return 0
 
     def available(self):
