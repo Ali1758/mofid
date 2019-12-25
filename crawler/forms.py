@@ -11,7 +11,7 @@ class SelectCrawlingModelForm(forms.Form):
 
 class CustomForm(forms.Form):
     SelectList = (("mofidteb", "مفیدطب"), ("darukade", "داروکده"), ("mosbatesabz", "مثبت سبز"),
-                  ("digikala", "دیجیکالا"), ("ezdaru", "ایزی دارو"), ("shider", "شیدر"))
+                  ("digikala", "دیجیکالا"), ("ezdaroo", "ایزی دارو"), ("shiderstore", "شیدر"))
 
     users = forms.MultipleChoiceField(label="ارسال اعلانات برای افراد منتخب",
                                       required=True,

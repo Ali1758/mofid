@@ -72,7 +72,8 @@ def crawler_engine(output_name, sites, users):
     def urlcontent(address):
         page = requests.get(url=address,
                             headers={
-                                'User-Agent': random.choice(user_agent_list)})
+                                # 'User-Agent': random.choice(user_agent_list)})
+                                'User-Agent': user_agent_list[12]})
         html = page.text
         return str(html)
 
@@ -116,7 +117,6 @@ def crawler_engine(output_name, sites, users):
                     other_url = url
 
                 used_sites.append(site_name)
-                time.sleep(30)
 
         summary.append([product_code, product_name, mofid_price, mofid_avail,
                         other_store, other_price, other_avail, other_url])
@@ -128,7 +128,7 @@ def crawler_engine(output_name, sites, users):
         obj.percentage = round(percent, 2)
         obj.save()
 
-        if percent % 10 == 0 and percent != 0:
+        if row_num % (data.shape[0] / 10) == 0 and percent != 0:
             backup_name = output_name + 'backup' + str(int(row_num / 50))
             save2file(backup_name, data, output, summary)
             Backup.create(name=backup_name, parent=obj, address=backup_name + ".xlsx")
