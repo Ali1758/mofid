@@ -90,7 +90,7 @@ def crawler_engine(output_name, sites, users):
         used_sites = list()
         for url in data.iloc[row_num][4:].values:
             if check('http', url):
-                site_name = str(url.split('/')[2].split('.')[-2])
+                site_name = str(url.split('*')[-1].split('/')[2].split('.')[-2])
                 if site_name in sites:
                     product = eval('{}()'.format(site_name.capitalize()))
                     product.init(urlcontent(url))
