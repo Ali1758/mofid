@@ -11,7 +11,7 @@ from django.conf import settings
 from telegram.telegram import send_message
 from users.models import User
 from .models import Storage, Backup
-from .sites import Darukade, Digikala, Ezdaru, Mofidteb, Mosbatesabz, Shider
+from .sites import Darukade, Digikala, Ezdaroo, Mofidteb, Mosbatesabz, Shiderstore
 
 user_agent_list = [
     # Chrome
@@ -72,8 +72,7 @@ def crawler_engine(output_name, sites, users):
     def urlcontent(address):
         page = requests.get(url=address,
                             headers={
-                                # 'User-Agent': random.choice(user_agent_list)})
-                                'User-Agent': user_agent_list[12]})
+                                'User-Agent': random.choice(user_agent_list)})
         html = page.text
         return str(html)
 
@@ -128,9 +127,9 @@ def crawler_engine(output_name, sites, users):
         obj.percentage = round(percent, 2)
         obj.save()
 
-        if row_num % (data.shape[0] / 10) == 0 and percent != 0:
-            backup_name = output_name + 'backup' + str(int(row_num / 50))
-            save2file(backup_name, data, output, summary)
+        if (row_num + 1) % 200 == 0:
+            backup_name = output_name + '_backup_' + str(int((row_num + 1) % 200))
+            save2file(backup_name, data[:][:row_num], output, summary)
             Backup.create(name=backup_name, parent=obj, address=backup_name + ".xlsx")
             time.sleep(300)
 
