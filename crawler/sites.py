@@ -95,7 +95,7 @@ class Digikala:
         return 'ناموجود'
 
 
-class Shider:
+class Shiderstore:
     def __init__(self):
         self.name = 'شیدر'
 
@@ -116,7 +116,7 @@ class Shider:
         return 'موجود'
 
 
-class Ezdaru:
+class Ezdaroo:
     def __init__(self):
         self.name = 'ایزی دارو'
 
