@@ -32,5 +32,5 @@ def download_backup(request, slug):
     path = settings.MEDIA_ROOT + output.address
     file = open(path, 'rb')
     response = HttpResponse(file, content_type='application/vnd.ms-excel')
-    response['Content-Disposition'] = "attachment; filename={}".format(output.name)
+    response['Content-Disposition'] = "attachment; filename={}.xlsx".format(output.name)
     return response
