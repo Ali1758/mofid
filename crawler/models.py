@@ -13,7 +13,7 @@ class Storage(models.Model):
     start = models.DateTimeField(auto_now_add=True)
     final = models.DateTimeField(auto_now=True)
     address = models.FilePathField(path=settings.MEDIA_ROOT)
-    percentage = models.DecimalField(max_digits=5, decimal_places=0, default=0.00)
+    percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
