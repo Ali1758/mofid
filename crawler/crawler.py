@@ -92,7 +92,7 @@ def crawler_engine(output_name, sites, users):
                 site_name = str(url.split('*')[-1].split('/')[2].split('.')[-2])
                 if site_name in sites:
                     product = eval('{}()'.format(site_name.capitalize()))
-                    product.init(urlcontent(url))
+                    product.init(urlcontent(url[url.index('http'):]))
                     price = product.price()
                     if price:
                         available = product.available()
