@@ -100,20 +100,20 @@ def crawler_engine(output_name, sites, users):
                         available = "ناموجود"
                     output.append([product_code, product_name, site_name, available, price])
 
-                if site_name == 'mofidteb':
-                    mofid_price = price
-                    mofid_avail = available
+                    if site_name == 'mofidteb':
+                        mofid_price = price
+                        mofid_avail = available
 
-                    other_store = site_name
-                    other_price = price
-                    other_avail = available
-                    other_url = url
+                        other_store = site_name
+                        other_price = price
+                        other_avail = available
+                        other_url = url
 
-                elif site_name != 'mofidteb' and int(other_price) >= int(price) > 0:
-                    other_store = site_name
-                    other_price = price
-                    other_avail = available
-                    other_url = url
+                    elif site_name != 'mofidteb' and int(other_price) > int(price) > 0:
+                        other_store = site_name
+                        other_price = price
+                        other_avail = available
+                        other_url = url
 
                 used_sites.append(site_name)
 
@@ -127,8 +127,8 @@ def crawler_engine(output_name, sites, users):
         obj.percentage = round(percent, 2)
         obj.save()
 
-        if (row_num + 1) % 200 == 0:
-            backup_name = output_name + '_backup_' + str(int((row_num + 1) % 200))
+        if row_num % 200 == 0 and row_num != 0:
+            backup_name = output_name + '_backup_' + str(int((row_num + 1) / 200))
             save2file(backup_name, data[:][:row_num], output, summary)
             Backup.create(name=backup_name, parent=obj, address=backup_name + ".xlsx")
             time.sleep(300)
@@ -140,5 +140,6 @@ def crawler_engine(output_name, sites, users):
 
     for user in users:
         send_message(chat_id=user.telegram_id,
-                     text='Job done\nYou can download it <a href="{}">from here</a>'.format(obj.download_link()))
+                     text='Job done\nYou can download it from <a href="85.185.93.78:88{}">here</a>'.format(
+                         obj.download_link()))
     return None
