@@ -1,28 +1,28 @@
+from bs4 import BeautifulSoup as BS
 from unidecode import unidecode
 import re
+import requests
 
 
 class Mofidteb:
-    def __init__(self):
+    def __init__(self, url):
         self.name = 'مفیدطب'
-
-    def init(self, html):
-        self.html = html
+        html = requests.get(url).text
+        self.content = BS(html, 'html.parser')
 
     def price(self):
+        price = self.content.find('div', {'class': 'price'})
         try:
-            first = self.html.index('class="price"')
-            last = self.html.index('تومان', first)
-            price = re.findall('[0-9]+', re.sub(',', '', self.html[first: last]))[-1]
-            return price
+            return re.search(r'(\d+)', re.sub(',', '', str(price.find('span', {'class': 'text-discount'})))).group()
         except:
-            return 0
+            return re.search(r'(\d+)', re.sub(',', '', str(price))).group()
 
     def available(self):
-        blocks = [item.start() for item in re.finditer('class="block-box"', self.html)]
-        if self.html[blocks[0]:blocks[1]].count('افزودن به سبد خرید'):
-            return 'موجود'
-        return 'ناموجود'
+        avail = self.content.find('div', {'class': 'product-share'})
+        ban = avail.find('i', {'class': 'fa-ban'})
+        if ban:
+            return 'ناموجود'
+        return 'موجود'
 
 
 class Darukade:
