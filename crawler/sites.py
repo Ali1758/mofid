@@ -26,26 +26,25 @@ class Mofidteb:
 
 
 class Darukade:
-    def __init__(self):
+    def __init__(self, url):
         self.name = 'داروکده'
-
-    def init(self, html):
-        self.html = html
+        html = requests.get(url).text
+        self.content = BS(html, 'html.parser')
 
     def price(self):
-        try:
-            # first = re.search('price-label">', self.html).span()[0]
-            first = self.html.index('price-label">')
-            last = self.html.index('</div>', first)
-            price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[0]
-            return price
+        try:    
+            return re.search(r'(\d+)', re.sub(',', '', str(self.content.find('div', {'class': 'off-price-label'}).find('i')))).group()
         except:
-            return 0
+            return re.search(r'(\d+)', re.sub(',', '', str(self.content.find('div', {'class': 'price-label'}).find('i')))).group()
 
     def available(self):
-        if '<div class="product-img unavailable-product">' in self.html:
+        avail = self.content.find('div', {'class': 'product-price-layer'})
+        ban = avail.find('button', {'class': 'notice-me'})
+        if ban:
             return 'ناموجود'
-        return 'موجود'
+        else:
+            return 'موجود'
+
 
 
 class Mosbatesabz:
