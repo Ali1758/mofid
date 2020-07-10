@@ -48,28 +48,26 @@ class Darukade:
 
 
 class Mosbatesabz:
-    def __init__(self):
+    def __init__(self, url):
         self.name = 'مثبت سبز'
-
-    def init(self, html):
-        self.html = unidecode(html)
+        html = requests.get(url).text
+        self.content = BS(unidecode(html), 'html.parser')
 
     def price(self):
+        price = self.content.find('p', {'class': 'price'})
         try:
-            first = re.search('<p class="price"', self.html).span()[0]
-            last = self.html.index('</p>', first)
-            price = re.findall('[0-9]+', re.sub('[a-zA-Z</>,]', '', self.html[first:last]))[-1]
-            return price
+            return re.search(r'(\d+)', re.sub(',', '', str(price.find('ins').text))).group()
         except:
-            return 0
+            return re.search(r'(\d+)', re.sub(',', '', str(price.find('span', {'class': 'amount'}).text))).group()
+
 
     def available(self):
-        first = re.search('info_box', self.html).span()[0]
-        last = self.html.index('</div>', first)
-        text = self.html[first:last]
-        if 'موجود در انبار' in text:
+        avail = self.content.find('div', {'class': 'info_box'})
+        ban = avail.find('i', {'class': 'fa-times-circle'})
+        if ban:
+            return 'ناموجود'
+        else:
             return 'موجود'
-        return 'ناموجود'
 
 
 class Digikala:
