@@ -71,18 +71,15 @@ class Mosbatesabz:
 
 
 class Digikala:
-    def __init__(self):
+    def __init__(self, url):
         self.name = 'دیجیکالا'
-
-    def init(self, html):
-        self.html = html
+        html = requests.get(url).text
+        self.content = BS(unidecode(html), 'html.parser')
 
     def price(self):
+        panel = self.content.find('div', {'class': 'c-product__summary'})
         try:
-            first = self.html.index('<div class="c-product__seller-price-raw js-price-value"')
-            last = self.html.index('</div>', first)
-            price = re.findall('[0-9]+', unidecode(re.sub(',', '', self.html[first: last])))[-1]
-            return price
+            return re.sub(',', '', str(panel.find('div', {'class': 'c-product__seller-price-raw'}).text.split()[0]))
         except:
             return 0
 
