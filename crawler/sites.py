@@ -90,24 +90,29 @@ class Digikala:
 
 
 class Shiderstore:
-    def __init__(self):
+    def __init__(self, url):
         self.name = 'شیدر'
+        html = requests.get(url).text
+        self.content = BS(unidecode(html), 'html.parser')
 
     def init(self, html):
         self.html = html
 
     def price(self):
-        try:
-            st = self.html.index('قیمت:')
-            sub = self.html[st: self.html.index('ریال', st)]
-            return int(int(re.sub('[a-zA-Z</>,:=" -]', '', unidecode(sub))) / 10)
-        except:
+        panel = self.content.find('fieldset', {'class': 'group-head'})
+        c = panel.find('input', {'id': 'edit-submit'}).has_attr('disabled')
+        if not c:
+            return int(int(re.search(r'\d+', str(re.sub(',', '', str(panel.find('tr', {'class': 'commerce-price-savings-formatter-price'}).text)))).group())/10)
+        else:
             return 0
 
     def available(self):
-        if self.html.count('ناموجود'):
+        panel = self.content.find('fieldset', {'class': 'group-head'})
+        ban = panel.find('input', {'id': 'edit-submit'}).has_attr('disabled')
+        if ban:
             return 'ناموجود'
-        return 'موجود'
+        else:
+            return 'موجود'
 
 
 class Ezdaroo:
