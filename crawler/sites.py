@@ -95,9 +95,6 @@ class Shiderstore:
         html = requests.get(url).text
         self.content = BS(unidecode(html), 'html.parser')
 
-    def init(self, html):
-        self.html = html
-
     def price(self):
         panel = self.content.find('fieldset', {'class': 'group-head'})
         c = panel.find('input', {'id': 'edit-submit'}).has_attr('disabled')
@@ -116,21 +113,20 @@ class Shiderstore:
 
 
 class Ezdaroo:
-    def __init__(self):
+    def __init__(self, url):
         self.name = 'ایزی دارو'
-
-    def init(self, html):
-        self.html = html
+        html = requests.get(url).text
+        self.content = BS(unidecode(html), 'html.parser')
 
     def price(self):
-        try:
-            html = self.html
-            sub = html[html.index('class="price"'):html.index('class="product-buttons-wrap clearfix"')]
-            return min(re.findall('[0-9]+', re.sub('[,]', '', sub)))
-        except:
-            return 0
-
+        panel = self.content.find('div', {'class': 'detail-container'})
+        q = panel.find('ul', {'class': 'list-unstyled'}).findAll('span')[3].text
+        return re.search(r'\d+', re.sub(',', '', q)).group()
+    
     def available(self):
-        if self.html.count('ناموجود'):
+        panel = self.content.find('div', {'class': 'detail-container'})
+        avail = panel.find('ul', {'class': 'list-unstyled'}).findAll('span')[1].text
+        if avail.isnumeric():
+            return 'موجود'
+        else:
             return 'ناموجود'
-        return 'موجود'
