@@ -7,6 +7,7 @@ import pandas as pd
 import os
 import time
 import random
+import re
 from django.conf import settings
 from telegram.telegram import send_message
 from users.models import User
@@ -59,7 +60,7 @@ def save2file(name, data, output, summary):
 
 @shared_task
 def crawler_engine(output_name, sites, users):
-    global available, other_url, other_avail, other_store, mofid_avail, mofid_price, other_price, price
+    # global available, other_url, other_avail, other_store, mofid_avail, mofid_price, other_price, price
     users = User.access.filter(username__in=users)
     for user in users:
         send_message(chat_id=user.telegram_id, text="Job Started")
@@ -76,11 +77,6 @@ def crawler_engine(output_name, sites, users):
         html = page.text
         return str(html)
 
-    def check(item, string):
-        if item in str(string):
-            return True
-        return False
-
     output = list()
     summary = list()
     for row_num in range(data.shape[0]):
@@ -88,34 +84,37 @@ def crawler_engine(output_name, sites, users):
         product_name = data.iloc[row_num, 1]
         used_sites = list()
         for url in data.iloc[row_num][4:].values:
-            if check('http', url):
-                site_name = str(url.split('*')[-1].split('/')[2].split('.')[-2])
-                if site_name in sites:
-                    product = eval('{}()'.format(site_name.capitalize()))
-                    product.init(urlcontent(url[url.index('http'):]))
-                    price = product.price()
-                    if price:
-                        available = product.available()
-                    else:
-                        available = "ناموجود"
-                    output.append([product_code, product_name, site_name, available, price])
+            try:
+                link, site = re.search(r'(https?://(\S+).\w+)', url).groups()
+            except (AttributeError, TypeError):
+                continue
+            
+            if site in sites:
+                product = eval('{}()'.format(site.capitalize()))
+                product.init(urlcontent(link))
+                price = product.price()
+                if price:
+                    available = product.available()
+                else:
+                    available = "ناموجود"
+                output.append([product_code, product_name, site, available, price])
 
-                    if site_name == 'mofidteb':
-                        mofid_price = price
-                        mofid_avail = available
+                if site == 'mofidteb':
+                    mofid_price = price
+                    mofid_avail = available
 
-                        other_store = site_name
-                        other_price = price
-                        other_avail = available
-                        other_url = url
+                    other_store = site
+                    other_price = price
+                    other_avail = available
+                    other_url = link
 
-                    elif site_name != 'mofidteb' and int(other_price) > int(price) > 0:
-                        other_store = site_name
-                        other_price = price
-                        other_avail = available
-                        other_url = url
+                elif site != 'mofidteb' and int(other_price) > int(price) > 0:
+                    other_store = site
+                    other_price = price
+                    other_avail = available
+                    other_url = link
 
-                used_sites.append(site_name)
+            used_sites.append(site)
 
         summary.append([product_code, product_name, mofid_price, mofid_avail,
                         other_store, other_price, other_avail, other_url])
