@@ -14,34 +14,6 @@ from users.models import User
 from .models import Storage, Backup
 from .sites import Darukade, Digikala, Ezdaroo, Mofidteb, Mosbatesabz, Shiderstore
 
-user_agent_list = [
-    # Chrome
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
-    # Firefox
-    'Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)',
-    'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
-    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
-    'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko',
-    'Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; rv:11.0) like Gecko',
-    'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
-    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0)',
-    'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko',
-    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)',
-    'Mozilla/5.0 (Windows NT 6.1; Win64; x64; Trident/7.0; rv:11.0) like Gecko',
-    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
-    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)',
-    'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)'
-]
-
 
 def save2file(name, data, output, summary):
     output_cols = ['کد محصول', 'نام محصول', 'فروشنده', 'وضعیت موجودی', 'قیمت']
@@ -60,6 +32,7 @@ def save2file(name, data, output, summary):
 
 @shared_task
 def crawler_engine(output_name, sites, users):
+# def crawler_engine(output_name):
     # global available, other_url, other_avail, other_store, mofid_avail, mofid_price, other_price, price
     users = User.access.filter(username__in=users)
     for user in users:
@@ -70,33 +43,32 @@ def crawler_engine(output_name, sites, users):
 
     obj = Storage.objects.get(name=output_name)
 
-    def urlcontent(address):
-        page = requests.get(url=address,
-                            headers={
-                                'User-Agent': random.choice(user_agent_list)})
-        html = page.text
-        return str(html)
-
     output = list()
     summary = list()
     for row_num in range(data.shape[0]):
         product_code = data.iloc[row_num, 0]
         product_name = data.iloc[row_num, 1]
+        # print(product_code, product_name)
         used_sites = list()
         for url in data.iloc[row_num][4:].values:
             try:
-                link, site = re.search(r'(https?://(\S+).\w+)', url).groups()
+                link, _, site = re.search(r'(https?://(www)?\.?(\S+)\.\w{2,6}\/.*)', url).groups()
             except (AttributeError, TypeError):
                 continue
             
             if site in sites:
-                product = eval('{}()'.format(site.capitalize()))
-                product.init(urlcontent(link))
-                price = product.price()
-                if price:
+                try:
+                    product = eval(f'{site.capitalize()}(url)'.format())
+                    price = product.price()
                     available = product.available()
-                else:
-                    available = "ناموجود"
+                except Exception as e:
+                    print(e)
+                    price = "Error"
+                    available = "Error"
+                
+                # print(price, available)
+                # print("==-==-==-==-==-==-==-==-==-==-==-==")
+
                 output.append([product_code, product_name, site, available, price])
 
                 if site == 'mofidteb':
@@ -108,11 +80,12 @@ def crawler_engine(output_name, sites, users):
                     other_avail = available
                     other_url = link
 
-                elif site != 'mofidteb' and int(other_price) > int(price) > 0:
-                    other_store = site
-                    other_price = price
-                    other_avail = available
-                    other_url = link
+                elif site != 'mofidteb' and str(price).isnumeric():
+                    if int(other_price) > int(price) > 0:
+                        other_store = site
+                        other_price = price
+                        other_avail = available
+                        other_url = link
 
             used_sites.append(site)
 
