@@ -31,7 +31,7 @@ def save2file(name, data, output, summary):
 
 
 @shared_task
-def crawler_engine(output_name, sites, users):
+def crawler_engine(output_name, sites, users, continue_progress=False):
 # def crawler_engine(output_name):
     # global available, other_url, other_avail, other_store, mofid_avail, mofid_price, other_price, price
     users = User.access.filter(username__in=users)
@@ -40,15 +40,24 @@ def crawler_engine(output_name, sites, users):
     data_url = 'https://docs.google.com/spreadsheets/d/12EdKTrZ1pcJ6ce3GID6V-1W7MbafF8AnXBMSr_uoXRw/gviz/tq?tqx=out:csv'
     data = pd.read_csv(data_url)
     data = data.dropna(axis='columns', how='all')
-
+    
     obj = Storage.objects.get(name=output_name)
-
-    output = list()
-    summary = list()
-    for row_num in range(data.shape[0]):
+    
+    if continue_progress and obj.backups.exists():
+        ff = f'{settings.MEDIA_ROOT+obj.backups.first().address}.xlsx'
+        output = pd.read_excel(ff, sheet_name='خروجي', index_col=0)
+        summary = pd.read_excel(ff, sheet_name='گزارش', index_col=0)
+        start = int(obj.backups.first().name.split('_')[-1]) * 200
+        sites = [s.lower() for s in output['فروشنده'].unique()]
+    else:
+        output = list()
+        summary = list()
+        start = 0
+        
+    for row_num in range(start, data.shape[0]):
         product_code = data.iloc[row_num, 0]
         product_name = data.iloc[row_num, 1]
-        # print(product_code, product_name)
+        print(str(row_num)+" --> "+str(product_code))
         used_sites = list()
         for url in data.iloc[row_num][4:].values:
             try:
@@ -57,6 +66,7 @@ def crawler_engine(output_name, sites, users):
                 continue
             
             if site in sites:
+                print(site)
                 try:
                     product = eval(f'{site.capitalize()}(url)'.format())
                     price = product.price()
