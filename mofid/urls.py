@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from mofid.views import index_view
-from crawler.views import download_view, download_items, backups_view, download_backup
+from crawler.views import download_view, download_items, backups_view, download_backup, repair_items
 # from django.conf import settings
 # from django.conf.urls.static import static
 from django.contrib.auth.views import LoginView, LogoutView
