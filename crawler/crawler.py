@@ -119,23 +119,26 @@ def crawler_engine(output_name, sites, users):
 
 
 @shared_task
-def crawler_repair(obj):
-    ff = obj.address
+def crawler_repair(slug):
+    obj = Storage.objects.get(slug__exact=slug)
+    ff = settings.MEDIA_ROOT + obj.address
     data = pd.read_excel(ff, sheet_name='ورودي', index_col=0)
     output = pd.read_excel(ff, sheet_name='خروجي', index_col=0)
     summary = pd.read_excel(ff, sheet_name='گزارش', index_col=0)
 
     for row_num in output[output['قیمت']=='Error'].index:
-        product_code = output.iloc[row_num, 0]
+        product_name = output.iloc[row_num, 1]
         product_store = output.iloc[row_num, 2]
-        print(str(row_num)+" --> "+str(product_code))
         
-        for url in data[data['کد حسابداری']==product_code].values[0][4:]:
+        print(str(row_num)+" --> "+str(data[data['عنوان']==product_name]['کد حسابداری']))
+        
+        for url in data[data['عنوان']==product_name].values[0][4:]:
             try:
                 link, _, site = re.search(r'(https?://(www)?\.?(\S+)\.\w{2,6}\/.*)', url).groups()
             except (AttributeError, TypeError):
                 continue
             
+            print(site)
             if site==product_store:
                 try:
                     product = eval(f'{site.capitalize()}(url)'.format())
@@ -148,18 +151,19 @@ def crawler_repair(obj):
                 
                 output.iloc[row_num, -2:] = available, price
                 if site == 'mofidteb':
-                    summary.loc[summary[summary['کد محصول']==product_code].index, ['قيمت مفيد', 'وضعيت مفيد']] = price, available
-            
-        row = output[output['کد محصول']==product_code][output['قیمت']!='Error']
+                    summary.loc[summary[summary['نام محصول']==product_name].index, ['قيمت مفيد', 'وضعيت مفيد']] = price, available
+        
+        time.sleep(10)
+        row = output[output['نام محصول']==product_name][output['قیمت']!='Error']
         M = min(row[row['قیمت'].astype('int')>0].values.tolist(), key=lambda x:int(x[-1]))
-        r = summary[summary['کد محصول']==product_code].index
+        r = summary[summary['نام محصول']==product_name].index
         
         col = [a for a in filter(lambda x:x.count(eval(f'{str(M[-3].capitalize())}.name')), data.columns.to_list())][0]
         
         summary.iloc[r, -4:] = M[-3], M[-1], M[-2], data.iloc[r][col]
-        print(summary.iloc[r,:])
         print("==================================================================")
-        percent = (row_num + 1) / data.shape[0] * 100
+        p_code = int(data[data['عنوان']==product_name]['کد حسابداری'].index.values[0])
+        percent = (p_code + 1) / data.shape[0] * 100
         obj.percentage = round(percent, 2)
         obj.save()
     

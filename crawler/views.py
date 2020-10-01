@@ -44,5 +44,5 @@ def repair_items(request, slug):
     obj.complete = False
     obj.percentage = 0
     obj.save()
-    crawler_repair.delay(obj)
+    crawler_repair.delay(slug)
     return redirect('index')
