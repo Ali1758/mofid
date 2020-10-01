@@ -129,41 +129,39 @@ def crawler_repair(slug):
     for row_num in output[output['قیمت']=='Error'].index:
         product_name = output.iloc[row_num, 1]
         product_store = output.iloc[row_num, 2]
+        p_r = int(data[data['عنوان']==product_name].index.values[0])        #Produc row NO.
+        col = [data.columns.to_list().index(s) for s in data.columns if eval(f'{str(product_store.capitalize())}.name') in s][0]
         
-        print(str(row_num)+" --> "+str(data[data['عنوان']==product_name]['کد حسابداری']))
+        print(str(p_r)+" --> " + str(data[data['عنوان']==product_name]['کد حسابداری'].values[0]))
         
-        for url in data[data['عنوان']==product_name].values[0][4:]:
-            try:
-                link, _, site = re.search(r'(https?://(www)?\.?(\S+)\.\w{2,6}\/.*)', url).groups()
-            except (AttributeError, TypeError):
-                continue
+        try:
+            link, _, site = re.search(r'(https?://(www)?\.?(\S+)\.\w{2,6}\/.*)', data.iloc[p_r ,col]).groups()
+        except (AttributeError, TypeError):
+            continue
+        
+        print(site)
+        try:
+            product = eval(f'{site.capitalize()}(link)'.format())
+            price = product.price()
+            available = product.available()
+        except Exception as e:
+            print(e)
+            price = "Error"
+            available = "Error"
             
-            print(site)
-            if site==product_store:
-                try:
-                    product = eval(f'{site.capitalize()}(url)'.format())
-                    price = product.price()
-                    available = product.available()
-                except Exception as e:
-                    print(e)
-                    price = "Error"
-                    available = "Error"
-                
-                output.iloc[row_num, -2:] = available, price
-                if site == 'mofidteb':
-                    summary.loc[summary[summary['نام محصول']==product_name].index, ['قيمت مفيد', 'وضعيت مفيد']] = price, available
+        output.iloc[row_num, -2:] = available, price
+        if site == 'mofidteb':
+            summary.loc[summary[summary['نام محصول']==product_name].index, ['قيمت مفيد', 'وضعيت مفيد']] = price, available
         
-        time.sleep(10)
+        time.sleep(5)
         row = output[output['نام محصول']==product_name][output['قیمت']!='Error']
         M = min(row[row['قیمت'].astype('int')>0].values.tolist(), key=lambda x:int(x[-1]))
-        r = summary[summary['نام محصول']==product_name].index
         
-        col = [a for a in filter(lambda x:x.count(eval(f'{str(M[-3].capitalize())}.name')), data.columns.to_list())][0]
+        min_col = [data.columns.to_list().index(s) for s in data.columns if eval(f'{str(M[-3].capitalize())}.name') in s][0]
         
-        summary.iloc[r, -4:] = M[-3], M[-1], M[-2], data.iloc[r][col]
-        print("==================================================================")
-        p_code = int(data[data['عنوان']==product_name]['کد حسابداری'].index.values[0])
-        percent = (p_code + 1) / data.shape[0] * 100
+        summary.iloc[r, -4:] = M[-3], M[-1], M[-2], data.iloc[p_r][min_col]
+        print(" ==========================")
+        percent = (p_r + 1) / data.shape[0] * 100
         obj.percentage = round(percent, 2)
         obj.save()
     
