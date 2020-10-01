@@ -52,7 +52,7 @@
     {% include "Header.html" %}
 </div>
 
-<div class="container">
+<div class="container" style="padding-bottom: 50px;">
     {% block content %}
         {% if user.is_authenticated and user.has_access %}
             <div class="col-md-12" style="margin-bottom: 50px;">
@@ -60,9 +60,9 @@
                     <h5>{{ item.name }}</h5>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
-                             role="progressbar" aria-valuenow="{{ item.percentage }}" aria-valuemin="0"
-                             aria-valuemax="100"
-                             style="width: {{ item.percentage }}%; font-size: 1.5em; color: greenyellow "> {{ item.percentage }}%
+                            role="progressbar" aria-valuenow="{{ item.percentage }}" aria-valuemin="0"
+                            aria-valuemax="100"
+                            style="width: {{ item.percentage }}%; font-size: 1.5em; color: greenyellow;"> {{ item.percentage }}%
                         </div>
                     </div>
                 {% endfor %}
