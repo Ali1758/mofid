@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout', LogoutView.as_view(), name='Logout'),
     path('download/', download_view, name='download'),
     path('download/<slug:slug>/', download_items, name='download_item'),
+    path('repair/<slug:slug>/', repair_items, name='repair_item'),
     path('backups/<slug:slug>/', backups_view, name='backups'),
     path('backups/download/<slug:slug>/', download_backup, name='download_backup'),
 ]

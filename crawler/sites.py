@@ -43,8 +43,9 @@ def urlcontent(address):
 
 
 class Mofidteb:
+    name = 'مفیدطب'
+    
     def __init__(self, url):
-        self.name = 'مفیدطب'
         html = urlcontent(url)
         self.content = BS(html, 'html.parser')
 
@@ -64,8 +65,9 @@ class Mofidteb:
 
 
 class Darukade:
-    def __init__(self, url):
-        self.name = 'داروکده'
+    name = 'داروکده'
+    
+    def __init__(self, url):    
         html = urlcontent(url)
         self.content = BS(html, 'html.parser')
 
@@ -86,8 +88,9 @@ class Darukade:
 
 
 class Mosbatesabz:
-    def __init__(self, url):
-        self.name = 'مثبت سبز'
+    name = 'مثبت سبز'
+    
+    def __init__(self, url):    
         html = urlcontent(url)
         self.content = BS(unidecode(html), 'html.parser')
 
@@ -109,8 +112,9 @@ class Mosbatesabz:
 
 
 class Digikala:
+    name = 'دیجیکالا'
+    
     def __init__(self, url):
-        self.name = 'دیجیکالا'
         html = urlcontent(url)
         self.content = BS(unidecode(html), 'html.parser')
 
@@ -128,8 +132,9 @@ class Digikala:
 
 
 class Shiderstore:
+    name = 'شیدر'
+    
     def __init__(self, url):
-        self.name = 'شیدر'
         html = urlcontent(url)
         self.content = BS(unidecode(html), 'html.parser')
 
@@ -151,8 +156,9 @@ class Shiderstore:
 
 
 class Ezdaroo:
+    name = 'ایزی دارو'
+    
     def __init__(self, url):
-        self.name = 'ایزی دارو'
         html = urlcontent(url)
         self.content = BS(unidecode(html), 'html.parser')
 

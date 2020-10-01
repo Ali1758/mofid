@@ -40,15 +40,15 @@ def crawler_engine(output_name, sites, users):
     data_url = 'https://docs.google.com/spreadsheets/d/12EdKTrZ1pcJ6ce3GID6V-1W7MbafF8AnXBMSr_uoXRw/gviz/tq?tqx=out:csv'
     data = pd.read_csv(data_url)
     data = data.dropna(axis='columns', how='all')
-
+    
     obj = Storage.objects.get(name=output_name)
-
+    
     output = list()
     summary = list()
     for row_num in range(data.shape[0]):
         product_code = data.iloc[row_num, 0]
         product_name = data.iloc[row_num, 1]
-        # print(product_code, product_name)
+        print(str(row_num)+" --> "+str(product_code))
         used_sites = list()
         for url in data.iloc[row_num][4:].values:
             try:
@@ -57,8 +57,9 @@ def crawler_engine(output_name, sites, users):
                 continue
             
             if site in sites:
+                print(site)
                 try:
-                    product = eval(f'{site.capitalize()}(url)'.format())
+                    product = eval(f'{site.capitalize()}(link)'.format())
                     price = product.price()
                     available = product.available()
                 except Exception as e:
@@ -114,4 +115,61 @@ def crawler_engine(output_name, sites, users):
         send_message(chat_id=user.telegram_id,
                      text='Job done\nYou can download it from <a href="85.185.93.78:88{}">here</a>'.format(
                          obj.download_link()))
+    return None
+
+
+@shared_task
+def crawler_repair(obj):
+    ff = obj.address
+    data = pd.read_excel(ff, sheet_name='ورودي', index_col=0)
+    output = pd.read_excel(ff, sheet_name='خروجي', index_col=0)
+    summary = pd.read_excel(ff, sheet_name='گزارش', index_col=0)
+
+    for row_num in output[output['قیمت']=='Error'].index:
+        product_code = output.iloc[row_num, 0]
+        product_store = output.iloc[row_num, 2]
+        print(str(row_num)+" --> "+str(product_code))
+        
+        for url in data[data['کد حسابداری']==product_code].values[0][4:]:
+            try:
+                link, _, site = re.search(r'(https?://(www)?\.?(\S+)\.\w{2,6}\/.*)', url).groups()
+            except (AttributeError, TypeError):
+                continue
+            
+            if site==product_store:
+                try:
+                    product = eval(f'{site.capitalize()}(url)'.format())
+                    price = product.price()
+                    available = product.available()
+                except Exception as e:
+                    print(e)
+                    price = "Error"
+                    available = "Error"
+                
+                output.iloc[row_num, -2:] = available, price
+                if site == 'mofidteb':
+                    summary.loc[summary[summary['کد محصول']==product_code].index, ['قيمت مفيد', 'وضعيت مفيد']] = price, available
+            
+        row = output[output['کد محصول']==product_code][output['قیمت']!='Error']
+        M = min(row[row['قیمت'].astype('int')>0].values.tolist(), key=lambda x:int(x[-1]))
+        r = summary[summary['کد محصول']==product_code].index
+        
+        col = [a for a in filter(lambda x:x.count(eval(f'{str(M[-3].capitalize())}.name')), data.columns.to_list())][0]
+        
+        summary.iloc[r, -4:] = M[-3], M[-1], M[-2], data.iloc[r][col]
+        print(summary.iloc[r,:])
+        print("==================================================================")
+        percent = (row_num + 1) / data.shape[0] * 100
+        obj.percentage = round(percent, 2)
+        obj.save()
+    
+    F = pd.ExcelWriter(ff)
+    data.to_excel(F, sheet_name='ورودي')
+    output.to_excel(F, sheet_name='خروجي')
+    summary.to_excel(F, sheet_name='گزارش')
+    F.save()
+    obj.percentage = 100.00
+    obj.complete = True
+    obj.save()
+    
     return None

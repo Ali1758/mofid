@@ -37,6 +37,9 @@ class Storage(models.Model):
     def backups_links(self):
         return reverse("backups", args=[self.slug])
 
+    def repair_link(self):
+        return reverse("repair_item", args=[self.slug])
+
 
 class Backup(models.Model):
     name = models.CharField(max_length=40)
@@ -46,7 +49,7 @@ class Backup(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = slugify(self.name)
-        super(Backup, self).save()
+        return super(Backup, self).save()
 
     class Meta:
         ordering = ('-file', '-created')

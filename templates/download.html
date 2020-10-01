@@ -22,6 +22,7 @@
                 <th scope="col" style="vertical-align: middle;">درصد پیشرفت</th>
                 <th scope="col" style="vertical-align: middle;">دانلود خروجی</th>
                 <th scope="col" style="vertical-align: middle;">نسخه های پشتیبان</th>
+                <th scope="col" style="vertical-align: middle;">تعمیر</th>
 
             </tr>
             </thead>
@@ -41,6 +42,10 @@
                     <td scope="col" style="vertical-align: middle;">
                         <a href="{{ item.backups_links }}"
                            class="btn btn-warning {% if item.not_backup %}disabled{% endif %}">Backups</a>
+                    </td>
+                    <td scope="col" style="vertical-align: middle;">
+                        <a href="{{ item.repair_link }}"
+                           class="btn btn-dark {% if item.not_backup %}disabled{% endif %}">Repair</a>
                     </td>
                 </tr>
             {% endfor %}
