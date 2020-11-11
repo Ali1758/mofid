@@ -46,10 +46,10 @@ def crawler_engine(output_name, sites, users):
     output = list()
     summary = list()
     for row_num in range(data.shape[0]):
-        product_code = data.iloc[row_num, 0]
-        product_name = data.iloc[row_num, 1]
+        product_code, product_name = data.iloc[row_num, :2]
         print(str(row_num)+" --> "+str(product_code))
         used_sites = list()
+        vals = dict()
         for url in data.iloc[row_num][4:].values:
             try:
                 link, _, site = re.search(r'(https?://(www)?\.?(\S+)\.\w{2,6}\/.*)', url).groups()
@@ -59,7 +59,7 @@ def crawler_engine(output_name, sites, users):
             if site in sites:
                 print(site)
                 try:
-                    product = eval(f'{site.capitalize()}(link)'.format())
+                    product = eval(f'{site.capitalize()}')(link)
                     price = product.price()
                     available = product.available()
                 except Exception as e:
@@ -75,24 +75,26 @@ def crawler_engine(output_name, sites, users):
                 if site == 'mofidteb':
                     mofid_price = price
                     mofid_avail = available
-
-                    other_store = site
-                    other_price = price
-                    other_avail = available
-                    other_url = link
-
-                elif site != 'mofidteb' and str(price).isnumeric():
-                    if int(other_price) > int(price) > 0:
-                        other_store = site
-                        other_price = price
-                        other_avail = available
-                        other_url = link
-
+                    mofid_url = link
+                    
+                other_store = site
+                other_price = price
+                other_avail = available
+                other_url = link
+                
+                if price != 'Error':
+                    vals[site] = (price, available, link)
+                
             used_sites.append(site)
-
-        summary.append([product_code, product_name, mofid_price, mofid_avail,
-                        other_store, other_price, other_avail, other_url])
-
+        
+        try:
+            minSite = min(vals, key=lambda s:vals[s][0])
+            summary.append([product_code, product_name, mofid_price, mofid_avail,
+                        minSite, vals['minSite'][0], vals['minSite'][1], vals['minSite'][2]])
+        except:
+            minSite = summary.append([product_code, product_name, mofid_price, mofid_avail,
+                        'mofidteb', mofid_price, mofid_avail, mofid_url])
+        
         for site in [s for s in sites if s not in used_sites]:
             output.append([product_code, product_name, site, 'عدم تامین', 0])
 
@@ -155,11 +157,12 @@ def crawler_repair(slug):
         
         time.sleep(5)
         row = output[output['نام محصول']==product_name][output['قیمت']!='Error']
-        M = min(row[row['قیمت'].astype('int')>0].values.tolist(), key=lambda x:int(x[-1]))
-        
-        min_col = [data.columns.to_list().index(s) for s in data.columns if eval(f'{str(M[-3].capitalize())}.name') in s][0]
-        
-        summary.iloc[r, -4:] = M[-3], M[-1], M[-2], data.iloc[p_r][min_col]
+        try:
+            M = min(row[row['قیمت'].astype('int')>0].values.tolist(), key=lambda x:int(x[-1]))
+            min_col = [data.columns.to_list().index(s) for s in data.columns if eval(f'{str(M[-3].capitalize())}.name') in s][0]
+            summary.iloc[r, -4:] = M[-3], M[-1], M[-2], data.iloc[p_r][min_col]
+        except:
+            pass
         print(" ==========================")
         percent = (p_r + 1) / data.shape[0] * 100
         obj.percentage = round(percent, 2)
