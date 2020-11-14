@@ -136,23 +136,20 @@ class Shiderstore:
     
     def __init__(self, url):
         html = urlcontent(url)
-        self.content = BS(unidecode(html), 'html.parser')
+        self.content = BS(html, 'html.parser')
 
     def price(self):
-        panel = self.content.find('fieldset', {'class': 'group-head'})
-        c = panel.find('input', {'id': 'edit-submit'}).has_attr('disabled')
-        if not c:
-            return int(int(re.search(r'\d+', str(re.sub(',', '', str(panel.find('tr', {'class': 'commerce-price-savings-formatter-price'}).text)))).group())/10)
-        else:
+        panel = self.content.find('div', {'class': 'infoprice'})
+        try:
+            q = panel.find('div', {'class': 'price'}).find('span', {'class': 'special stock-1'}).text
+            return re.search(r'\d+', re.sub(',', '', q)).group()
+        except:
             return 0
 
     def available(self):
-        panel = self.content.find('fieldset', {'class': 'group-head'})
-        ban = panel.find('input', {'id': 'edit-submit'}).has_attr('disabled')
-        if ban:
-            return 'ناموجود'
-        else:
-            return 'موجود'
+        panel = self.content.find('div', {'class': 'infoprice'})
+        avail = panel.find('div', {'class': 'product-badge'}).find('span').text
+        return avail
 
 
 class Ezdaroo:
