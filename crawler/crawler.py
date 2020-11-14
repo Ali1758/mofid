@@ -32,8 +32,6 @@ def save2file(name, data, output, summary):
 
 @shared_task
 def crawler_engine(output_name, sites, users):
-# def crawler_engine(output_name):
-    # global available, other_url, other_avail, other_store, mofid_avail, mofid_price, other_price, price
     users = User.access.filter(username__in=users)
     for user in users:
         send_message(chat_id=user.telegram_id, text="Job Started")
@@ -90,7 +88,7 @@ def crawler_engine(output_name, sites, users):
         try:
             minSite = min(vals, key=lambda s:vals[s][0])
             summary.append([product_code, product_name, mofid_price, mofid_avail,
-                        minSite, vals['minSite'][0], vals['minSite'][1], vals['minSite'][2]])
+                        minSite, vals[minSite][0], vals[minSite][1], vals[minSite][2]])
         except:
             minSite = summary.append([product_code, product_name, mofid_price, mofid_avail,
                         'mofidteb', mofid_price, mofid_avail, mofid_url])
