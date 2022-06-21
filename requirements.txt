@@ -16,7 +16,7 @@ jdatetime==3.6.2
 jdcal==1.4.1
 kombu==4.6.3
 monotonic==1.5
-numpy==1.17.0
+numpy==1.22.0
 openpyxl==3.0.0
 pandas==0.25.0
 psycopg2==2.8.4
